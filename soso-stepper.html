@@ -1,0 +1,172 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+
+<dom-module id="soso-stepper">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      #container {
+        padding: 8px;
+        counter-reset: step;
+      }
+
+      .horizontal {
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -ms-flex-direction: row;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+      }
+
+      .horizontal.center {
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+      }
+
+      .vertical {
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+      }
+
+      .flex {
+        -ms-flex: 1 1 0.000000001px;
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-basis: 0.000000001px;
+        flex-basis: 0.000000001px;
+      }
+
+      .stepContainer {
+        counter-increment: step;
+        -ms-flex: 2;
+        -webkit-flex: 2;
+        flex: 2;
+      }
+
+      .stepContainer:first-of-type,
+      .stepContainer:last-of-type {
+        -ms-flex: 1 1 0.000000001px;
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-basis: 0.000000001px;
+        flex-basis: 0.000000001px;
+      }
+
+      .stepContainer:first-of-type #preBar {
+        display: none;
+      }
+
+      .stepContainer:first-of-type .label {
+        text-align: left;
+      }
+
+      .stepContainer:last-of-type #postBar {
+        display: none;
+        -ms-flex: 1 1 0.000000001px;
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-basis: 0.000000001px;
+        flex-basis: 0.000000001px;
+      }
+
+      .stepContainer:last-of-type .label {
+        text-align: right;
+      }
+
+
+      .counter {
+        margin: 8px;
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        font-size: 12px;
+        background: var(--soso-stepper-base-color, #9e9e9e);
+        color: var(--soso-stepper-badge-text-color, #FFF);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .counter::before {
+        content: counter(step);
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 0;
+        left: 0;
+        text-align: center;
+      }
+
+      .bar {
+        height: 1px;
+        min-width: 16px;
+        background-color: var(--soso-stepper-line-color, #BDBDBD);
+      }
+
+      .label {
+        padding: 2px 8px 0;
+        text-align: center;
+        font-size: 14px;
+        color: #000;
+        opacity: 0.38;
+      }
+
+      .active .counter {
+        background: var(--soso-stepper-base-color, #1b98eb);
+      }
+
+      .active .label {
+        opacity: 0.87;
+      }
+    </style>
+    <div id="container" class="horizontal">
+      <dom-repeat items="[[steps]]">
+        <template>
+          <div data-index$="[[index]]" class="stepContainer vertical">
+            <div class="horizontal center">
+              <div id="preBar" class="flex bar"></div>
+              <div class="counter"></div>
+              <div id="postBar" class="flex bar"></div>
+            </div>
+            <div class="label">[[item.label]]</div>
+          </div>
+        </template>
+      </dom-repeat>
+    </div>
+  </template>
+
+  <script>
+    class SosoStepper extends Polymer.Element {
+      static get is() { return 'soso-stepper'; }
+      static get properties() {
+        return {
+          selectedIndex: {
+            type: Number,
+            notify: true,
+          }
+          steps: {
+            type: Array,
+            value: () => {
+              return [
+                { label: "Select campaign settings" },
+                { label: "Create an ad group" },
+                { label: "Create an ad" },
+                { label: "Preview" }
+              ]
+            }
+          }
+        };
+      }
+    }
+
+    window.customElements.define(SosoStepper.is, SosoStepper);
+  </script>
+</dom-module>

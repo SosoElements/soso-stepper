@@ -1,0 +1,14 @@
+{
+  "name": "soso-stepper",
+  "description": "Simple stepper that can be used in a wizard",
+  "main": "soso-stepper.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "resolutions": {
+    "polymer": "^2.0.0"
+  }
+}
