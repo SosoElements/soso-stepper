@@ -169,14 +169,6 @@
           },
           steps: {
             type: Array,
-            value: () => {
-              return [
-                { label: "Select campaign settings" },
-                { label: "Create an ad group" },
-                { label: "Create an ad" },
-                { label: "Preview" }
-              ]
-            },
             observer: '_refresh'
           }
         };
