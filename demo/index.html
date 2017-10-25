@@ -19,12 +19,24 @@
       }
     </style>
   </custom-style>
+  <script>
+    function _enable(event) {
+      let index = +event.target.dataset.index;
+      document.getElementById("st").enable(index);
+    }
+  </script>
 </head>
 
 <body>
   <div class="vertical-section-container centered">
+    <div>
+      <h4>Enable Step</h4>
+      <button data-index="1" onclick="_enable(event)">Two</button>
+      <button data-index="2" onclick="_enable(event)">Three</button>
+      <button data-index="3" onclick="_enable(event)">Four</button>
+    </div>
     <h3>Basic soso-stepper demo</h3>
-    <soso-stepper></soso-stepper>
+    <soso-stepper id="st"></soso-stepper>
   </div>
 </body>
 

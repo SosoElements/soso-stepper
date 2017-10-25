@@ -6,6 +6,10 @@
     <style>
       :host {
         display: block;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
 
       #container {
@@ -91,8 +95,9 @@
         font-size: 12px;
         background: var(--soso-stepper-base-color, #9e9e9e);
         color: var(--soso-stepper-badge-text-color, #FFF);
-        cursor: pointer;
         position: relative;
+        opacity: 0.6;
+        transition: opacity 0.2s ease, background 0.28s ease;
       }
 
       .counter::before {
@@ -119,8 +124,15 @@
         opacity: 0.38;
       }
 
+      .enabled .counter {
+        cursor: pointer;
+        opacity: 1;
+      }
+
       .active .counter {
         background: var(--soso-stepper-base-color, #1b98eb);
+        cursor: initial;
+        opacity: 1;
       }
 
       .active .label {
@@ -133,10 +145,12 @@
           <div data-index$="[[index]]" class="stepContainer vertical">
             <div class="horizontal center">
               <div id="preBar" class="flex bar"></div>
-              <div class="counter"></div>
+              <div class="counter" on-click="_onClick"></div>
               <div id="postBar" class="flex bar"></div>
             </div>
-            <div class="label">[[item.label]]</div>
+            <div class="label">
+              <span on-click="_onClick">[[item.label]]</span>
+            </div>
           </div>
         </template>
       </dom-repeat>
@@ -151,7 +165,8 @@
           selectedIndex: {
             type: Number,
             notify: true,
-          }
+            observer: '_refreshSelection'
+          },
           steps: {
             type: Array,
             value: () => {
@@ -161,9 +176,67 @@
                 { label: "Create an ad" },
                 { label: "Preview" }
               ]
-            }
+            },
+            observer: '_refresh'
           }
         };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this._connected = true;
+        this._refresh();
+      }
+
+      disconnectedCallback() {
+        super.disconnectedCallback();
+        this._connected = false;
+      }
+
+      _refresh() {
+        if (!this._connected) {
+          return;
+        }
+        this.selectedIndex = 0;
+        setTimeout(() => {
+          if (this._connected) {
+            this.enable(this.selectedIndex);
+            this._refreshSelection();
+          }
+        }, 10);
+
+      }
+
+      enable(index) {
+        this._enabledStep = index;
+        const stepNodes = this.shadowRoot.querySelectorAll(".stepContainer") || [];
+        for (let i = 0; i < stepNodes.length; i++) {
+          const n = stepNodes[i];
+          let ix = +n.dataset.index;
+          if (ix <= index) {
+            n.classList.add("enabled");
+          } else {
+            n.classList.remove("enabled");
+          }
+        }
+      }
+
+      _refreshSelection() {
+        if (this._selectedNode) {
+          this._selectedNode.classList.remove("active");
+          this._selectedNode = null;
+        }
+        this._selectedNode = this.shadowRoot.querySelector('div[data-index="' + this.selectedIndex + '"]');
+        if (this._selectedNode) {
+          this._selectedNode.classList.add("active");
+        }
+      }
+
+      _onClick(event) {
+        let index = event.model.index;
+        if (index <= (this._enabledStep || 0)) {
+          this.selectedIndex = index;
+        }
       }
     }
 
